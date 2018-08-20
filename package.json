@@ -4,6 +4,7 @@
   "description": "This plugin is a modified version of the [code found here](https://github.com/jpambrun/cornerstonePenBrushExperiment) by @jpambrun. The included license is set to match the ISC license specified in @jpambrun's `package.json`.",
   "main": "index.js",
   "scripts": {
+    "start": "forever -w app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/dannyrb/advanced-tools-plugin-example/issues"
   },
-  "homepage": "https://github.com/dannyrb/advanced-tools-plugin-example#readme"
+  "homepage": "https://github.com/dannyrb/advanced-tools-plugin-example#readme",
+  "devDependencies": {
+    "express": "^4.16.3",
+    "forever": "^0.15.3"
+  }
 }
