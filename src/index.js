@@ -172,16 +172,15 @@ class SvgBrush {
 
     const toolState = cornerstoneTools.getToolState(element, this.name);
     if (toolState) {
-      const data = toolState.data[0];
+      const data = cornerstoneTools.getToolState(element, this.name).data[0];
       const seg = data.segmentations[this.configuration.segmentationIndex];
       for (let i = 0; i < seg.regions.length; i++) {
-        seg.regions[i] = simplify(
-          seg.regions[i],
-          this.configuration.simplifyPrecision,
-          true
-        );
+        seg.regions[i] = seg.regions[i]; // simplify(
+        // seg.regions[i],
+        // this.configuration.simplifyPrecision,
+        // true
+        // );
       }
-
       this._draw(element, data);
     }
   }
@@ -238,11 +237,28 @@ class SvgBrush {
     this.configuration.radius = _setCursor(data, this.configuration.radius);
   }
 
-  // PRIVATE
+  passiveCallback(element, options) {
+    const toolState = cornerstoneTools.getToolState(element, this.name);
+    if (toolState) {
+      const data = toolState.data[0];
+      _setCursor(data, undefined);
+    }
+  }
+
+  // ~~ PRIVATE
+
+  /**
+   * Draw's a representation of the tool's data
+   *
+   * @param {*} element
+   * @param {*} data
+   * @memberof SvgBrush
+   */
   _draw(element, data) {
     const svgElement = document.getElementById("svg");
 
     // clear the svg
+
     // TODO: add ability to remove segmentations
     const paths = Array.from(svgElement.children);
     data.segmentations.forEach((seg, index) => {
@@ -399,10 +415,4 @@ function pointerenterCallback(e) {
   }
 
   this.configuration.radius = _setCursor(data, this.configuration.radius);
-}
-
-function deactivateCallback(element) {
-  const data = cornerstoneTools.getToolState(element, TOOL_NAME).data[0];
-  _setCursor(data, undefined);
-  element.removeEventListener("pointerenter", pointerenterCallback);
 }
