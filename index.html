@@ -6,6 +6,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
+	<!-- Cornerstone Dependencies -->
+	<script src="https://unpkg.com/hammerjs@2.0.8/hammer.js"></script>
+
 	<!-- Cornerstone Libraries (Peer Dependencies) -->
 	<script src="https://unpkg.com/dicom-parser@1.8.1/dist/dicomParser.min.js"></script>
 	<script src="https://unpkg.com/cornerstone-core@2.2.4/dist/cornerstone.min.js"></script>
@@ -76,7 +79,15 @@
 		const imageId = `wadouri:http://${window.location.host}/example/000123.dcm`;
 		const element = document.getElementById('dicomImage');
 		cornerstone.enable(element);
+		const csTools = cornerstoneTools.init(element);
+		csTools.addEnabledElement(element);
+		csTools.addTool(SvgBrush);
+
 		fullscreenDiv(element)
+
+		//
+		//
+		const svgBrush = new SvgBrush();
 
 		cornerstone.loadImage(imageId).then(function (image) {
 			cornerstone.displayImage(element, image);
@@ -84,13 +95,14 @@
 			const enabledElement = cornerstone.getEnabledElement(element);
 			// cornerstoneTools.mouseInput.enable(element);
 			// cornerstoneTools.mouseWheelInput.enable(element);
-			cornerstoneTools.svgBrush.enable(element);
-			cornerstoneTools.svgBrush.activate(element, 1);
+			// cornerstoneTools.svgBrush.enable(element);
+			// cornerstoneTools.svgBrush.activate(element, 1);
 			// cornerstoneTools.pan.activate(element, 2);
 			// cornerstoneTools.zoom.activate(element, 4);
+			csTools.setToolActive('svgBrush', { mouseButtonMask: 1 })
 
 			var gui = new dat.GUI();
-			var config = cornerstoneTools.svgBrush.getConfiguration();
+			var config = svgBrush.configuration;
 			gui.add(config, 'radius', 1, 32).listen();
 			gui.add(config, 'segmentationIndex', 0, 2).step(1).listen();
 			gui.add(config, 'simplifyPrecision', 0, 2).step(.01).listen();
