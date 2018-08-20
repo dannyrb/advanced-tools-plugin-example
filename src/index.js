@@ -11,14 +11,6 @@ class SvgBrush {
       simplifyPrecision: 0.4
     };
 
-    this.defaultConfiguration = {
-      radius: 10,
-      segmentationIndex: 0,
-      segmentationColors: ["#bada55", "#55daba", "#ba55da"],
-      pinchToZoom: false,
-      simplifyPrecision: 0.4
-    };
-
     this.supportedInteractionTypes = ["mouse", "touch"];
     this.touchEventCache = new Map();
   }
@@ -194,7 +186,8 @@ class SvgBrush {
    * @memberof SvgBrush
    */
   mouseWheelCallback(evt) {
-    if (evt.shiftKey) {
+    // todo: fix this event in cornerstone-tools
+    if (evt.detail.detail.shiftKey) {
       const element = evt.currentTarget;
       const data = cornerstoneTools.getToolState(element, this.name).data[0];
       const newRadius =
