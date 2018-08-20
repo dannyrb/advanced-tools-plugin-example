@@ -15,7 +15,7 @@
 	<script src="https://unpkg.com/cornerstone-math@0.1.6/dist/cornerstoneMath.min.js"></script>
 	<script src="https://unpkg.com/cornerstone-wado-image-loader@2.1.4/dist/cornerstoneWADOImageLoader.min.js"></script>
 	<!-- Beta version of CornerstoneTools -->
-	<script src="https://unpkg.com/cornerstone-tools@3.0.0-b.458/dist/cornerstoneTools.min.js"></script>
+	<script src="https://unpkg.com/cornerstone-tools@3.0.0-b.461/dist/cornerstoneTools.min.js"></script>
 
 	<!-- Other 3rd party dependencies -->
 	<!-- <script src="https://unpkg.com/polygon-tools@0.4.8/lib/index.js"></script> -->
@@ -102,7 +102,10 @@
 			var gui = new dat.GUI();
 			var config = svgBrush.configuration;
 			gui.add(config, 'radius', 1, 32).listen();
-			gui.add(config, 'segmentationIndex', 0, 2).step(1).listen();
+			gui.add(config, 'segmentationIndex', 0, 2).step(1).listen().onChange((val) => {
+				const tool = csTools.getToolForElement(element, 'svgBrush');
+				tool.options = Object.assign({}, tool.options, { segmentationIndex: val })
+			});
 			gui.add(config, 'simplifyPrecision', 0, 2).step(.01).listen();
 			const voi = enabledElement.viewport.voi;
 			const voichange = () => {

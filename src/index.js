@@ -1,5 +1,3 @@
-// const BaseTool = cornerstoneTools.BaseTool;
-
 class SvgBrush {
   constructor() {
     this.name = "svgBrush";
@@ -50,7 +48,7 @@ class SvgBrush {
           : this.configuration.radius;
       const region = createRegion(currentImagePoint, undefined, radius / scale);
 
-      paintRegion(data, this.configuration.segmentationIndex, region);
+      paintRegion(data, this.options.segmentationIndex, region);
       this._draw(element, data);
 
       // todo: Prevent?
@@ -86,7 +84,7 @@ class SvgBrush {
         radius / scale
       );
 
-      paintRegion(data, this.configuration.segmentationIndex, region);
+      paintRegion(data, this.options.segmentationIndex, region);
       this._draw(element, data);
     }
   }
@@ -99,7 +97,7 @@ class SvgBrush {
     const toolState = cornerstoneTools.getToolState(element, this.name);
     if (toolState) {
       const data = cornerstoneTools.getToolState(element, this.name).data[0];
-      const seg = data.segmentations[this.configuration.segmentationIndex];
+      const seg = data.segmentations[this.options.segmentationIndex];
       for (let i = 0; i < seg.regions.length; i++) {
         seg.regions[i] = seg.regions[i]; // simplify(
         // seg.regions[i],
@@ -162,6 +160,7 @@ class SvgBrush {
     }
 
     this.configuration.radius = _setCursor(data, this.configuration.radius);
+    this.options = Object.assign({}, this.options, { segmentationIndex: 0 });
   }
 
   passiveCallback(element, options) {
@@ -223,7 +222,9 @@ class SvgBrush {
         svgElement.appendChild(pathElement);
         paths.push(pathElement);
       }
-      paths[index].setAttributeNS(null, "d", pathString);
+      if (paths[index]) {
+        paths[index].setAttributeNS(null, "d", pathString);
+      }
     });
   }
 }
