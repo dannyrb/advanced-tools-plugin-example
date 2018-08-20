@@ -7,7 +7,6 @@ class SvgBrush {
       radius: 10,
       segmentationIndex: 0,
       segmentationColors: ["#bada55", "#55daba", "#ba55da"],
-      pinchToZoom: false,
       simplifyPrecision: 0.4
     };
 
@@ -29,16 +28,6 @@ class SvgBrush {
     const element = evt.currentTarget;
     // TODO:
     // element.setPointerCapture(evt.pointerId);
-
-    if (this.configuration.pinchToZoom && evt.pointerType === "touch") {
-      touchEventCache.set(e.pointerId, e);
-      element.addEventListener("pointermove", dragCallback);
-      element.addEventListener("pointerup", pointerUpCallback);
-      element.addEventListener("pointercancel", pointerUpCallback);
-      // element.addEventListener('pointerout', pointerUpCallback);
-      element.addEventListener("pointerleave", pointerUpCallback);
-      return;
-    }
 
     const toolState = cornerstoneTools.getToolState(element, this.name);
     if (toolState) {
@@ -76,56 +65,6 @@ class SvgBrush {
       y: evt.detail.currentPoints.canvas.y
     });
 
-    if (this.configuration.pinchToZoom && evt.pointerType === "touch") {
-      touchEventCache.set(evt.pointerId, evt);
-      let deltaTransform;
-      if (touchEventCache.size === 1) {
-        const lastPoint1 = {
-          x: evt.offsetX - evt.movementX,
-          y: evt.offsetY - evt.movementY
-        };
-        const currPoint1 = { x: evt.offsetX, y: evt.offsetY };
-        const domain = [[lastPoint1.x, lastPoint1.y]];
-        const range = [[currPoint1.x, currPoint1.y]];
-        // deltaTransform = nudged.estimateT(domain, range);
-      }
-      if (touchEventCache.size === 2) {
-        const [e1, e2] = touchEventCache.values();
-        const lastPoint1 = {
-          x: e1.offsetX - (evt.pointerId === e1.pointerId ? e1.movementX : 0),
-          y: e1.offsetY - (evt.pointerId === e1.pointerId ? e1.movementY : 0)
-        };
-        const lastPoint2 = {
-          x: e2.offsetX - (evt.pointerId === e2.pointerId ? e2.movementX : 0),
-          y: e2.offsetY - (evt.pointerId === e2.pointerId ? e2.movementY : 0)
-        };
-        const currPoint1 = { x: e1.offsetX, y: e1.offsetY };
-        const currPoint2 = { x: e2.offsetX, y: e2.offsetY };
-        const domain = [
-          [lastPoint1.x, lastPoint1.y],
-          [lastPoint2.x, lastPoint2.y]
-        ];
-        const range = [
-          [currPoint1.x, currPoint1.y],
-          [currPoint2.x, currPoint2.y]
-        ];
-        // deltaTransform = nudged.estimateTSR(domain, range);
-      }
-
-      if (deltaTransform) {
-        // const enabledElement = cornerstone.getEnabledElement(element);
-        // const m = cornerstone.internal.getTransform(enabledElement).m;
-        // let transform = new nudged.Transform(m[0], m[1], m[4], m[5]);
-        // transform = deltaTransform.multiplyBy(transform);
-        // const mt = transform.getMatrix();
-        // const t = new cornerstone.internal.Transform();
-        // t.m = [mt.a, mt.b, mt.c, mt.d, mt.e, mt.f];
-        // enabledElement.transform = t;
-        // cornerstone.updateImage(element);
-      }
-      return;
-    }
-
     const toolState = cornerstoneTools.getToolState(element, this.name);
     if (toolState) {
       const data = toolState.data[0];
@@ -156,11 +95,6 @@ class SvgBrush {
     const element = evt.currentTarget;
     // TODO:
     // element.releasePointerCapture(evt.pointerId);
-
-    if (this.configuration.pinchToZoom && evt.pointerType === "touch") {
-      touchEventCache.delete(evt.pointerId);
-      return;
-    }
 
     const toolState = cornerstoneTools.getToolState(element, this.name);
     if (toolState) {
